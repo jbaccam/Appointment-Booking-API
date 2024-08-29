@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block container %}
+<div class="jumbotron">
+  <h1 class="display-4">Welcome to Appointmently!</h1>
+  <p class="lead">This is an easy scheduling service that helps you manage appointments without the back-and-forth emails.</p>
+  <hr class="my-4">
+  <p>Ready to get started? Sign up for free or login to manage your appointments.</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('auth.sign_up') }}" role="button">Get Started</a>
+  <a class="btn btn-secondary btn-lg" href="{{ url_for('auth.login') }}" role="button">Login</a>
+</div>
+<div class="container">
+  <h1>You are logged in!</h1>
+  <strong>Name: {{ current_user.first_name }}</strong>
+  <strong>Email: {{ current_user.email }}</strong>
+  <strong>User Role: {{ current_user.role }}</strong>
+  {% if current_user.business %}
+    <strong>Business Name: {{ current_user.business.name }}</strong>
+    <strong>Business Email: {{ current_user.business.email }}</strong>
+    <strong>Business Phone: {{ current_user.business.phone }}</strong>
+  {% else %}
+    <strong>No associated business.</strong>
+  {% endif %}
+</div>
+{% endblock %}

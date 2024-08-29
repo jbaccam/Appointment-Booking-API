@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block title%}Schedule Appointment{% endblock %}
+
+{% block container%}
+{% block head %}
+    <link rel="stylesheet" href="../static/schedulestyles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+{% endblock %}
+{% block body %}
+<br style="padding-top: 20px;">
+    <div class="selection-container">
+        <div class="calendar-container">
+            <div class="heading">Choose a Date & Time</div>
+            <div id="calendar" class="calendar"></div>
+        </div>
+        <div class="time-slots-wrapper">
+            <div class="selected-date"></div>
+            <div class="time-slot-container" style="display: none;">
+                <!-- Time slots will go here -->
+            </div>
+        </div>
+    </div>
+    <script src="../static/timescript.js"></script>
+{% endblock %}
+{% endblock %}

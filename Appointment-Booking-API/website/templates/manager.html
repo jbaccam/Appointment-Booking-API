@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Manager{% endblock %}
+
+{% block head %}
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+  }
+
+  h3 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 15px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .btn {
+    width: 90%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+
+  label {
+    margin-bottom: .5rem;
+    display: block;
+  }
+
+  input[type="email"] {
+    font-size: 16px;
+    padding: 13px;
+  }
+</style>
+{% endblock %}
+
+{% block container %}
+<div class="container">
+  <form method="POST">
+    <h3>Remove User</h3>
+    <div class="form-group">
+      <label for="remove_user_email">Email Address</label>
+      <input type="email" class="form-control" id="remove_user_email" name="remove_user_email" placeholder="Enter email" />
+    </div>
+    <button type="submit" class="btn btn-danger">Remove User</button>
+  </form>  
+  <form method="POST" action="{{ url_for('views.generate_invite_code') }}" style="margin-top: 40px;">
+    <h3>Generate New Invite Code</h3>
+    <p>Generate a new invite code for new users to join your business.</p>
+    <button type="submit" class="btn btn-primary">Generate Invite Code</button>
+  </form>
+  {% if current_user.role == 'manager' %}
+  <div style="margin-top: 40px;">
+    <h3>Current Invite Code:</h3>
+    {% if current_user.business.invite_code %}
+    <p>{{ current_user.business.invite_code }}</p>
+    {% else %}
+    <p>No invite code generated. Please use the button above to generate one.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

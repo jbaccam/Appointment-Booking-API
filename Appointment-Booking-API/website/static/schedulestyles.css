@@ -1,0 +1,149 @@
+.selection-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 50px;
+    border: 1px solid #e1d8d8;
+    border-radius: 10px;
+    padding: 15px 0px 15px 5px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+}
+
+.heading {
+    font-family: Arial, sans-serif;
+    font-size: 1.35em;
+    color: #323232;
+    padding-bottom: 10px;
+    padding-left: 0px;
+}
+
+#calendar {
+    flex: 0 0 auto;
+    max-width: 300px;
+}
+
+.time-slots-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: 0;
+    padding-right: 3px;
+}
+
+.time-slots-wrapper.active {
+    width: 300px;
+    padding-right: 25px;
+}
+
+.selected-date {
+    font-family: Arial, sans-serif;
+    font-size: 1em;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    color: #464545;
+}
+
+.calendar-container {
+    width: 300px;
+}
+
+.flatpickr-calendar {
+    font-family: inherit;
+}
+
+.flatpickr-day.selected {
+    background: #007bff !important;
+}
+
+.flatpickr-day.today {
+    border: none;
+}
+
+.time-slot-container {
+    max-height: 296px;
+    overflow-y: auto;
+    border-radius: 10px;
+    border: 1px solid #e1d8d8;
+    padding: 5px;
+    width: 100%;
+}
+
+.time-slot-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.time-slot-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.time-slot-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.slot-item {
+    background: #FFF;
+    border: 1px solid #DDD;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px;
+    margin: 8px 0;
+    padding: 15px 10px;
+    transition: background-color 0.3s, transform 0.1s;
+    position: relative;
+    font-family: Arial, sans-serif;
+}
+
+.slot-item:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+.slot-item.confirming .time-text {
+    visibility: hidden;
+}
+
+.confirm-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+}
+
+.confirm-btn:hover {
+    background-color: #0056b3;
+}
+
+.flatpickr-calendar {
+    font-family: Arial, sans-serif;
+}
+
+.form-control {
+    display: none;
+}
