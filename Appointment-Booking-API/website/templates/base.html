@@ -1,110 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
-  <title>{% block title %}Home{% endblock %}</title>
-  <style>
-    .navbar-custom {
-      background-color: #D3D3D3; 
-      color: #000; 
-    }
-    .navbar-brand {
-      color: #000; 
-      margin-right: auto; 
-    }
-    .nav-link {
-      color: #000; 
-    }
-    
-    @media (min-width: 992px) {
-      .navbar-nav {
-        width: auto;
-        flex-grow: 0;
-      }
-      .navbar-collapse {
-        flex-grow: 0;
-      }
-      .nav-item:not(:last-child) {
-        margin-right: 15px; 
-      }
-      .ml-auto {
-        margin-left: auto; 
-      }
-      .navbar-custom .navbar-nav {
-        width: 100%;
-        justify-content: center;
-      }
-    }
-    
-    .navbar-toggler-icon {
-      background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MyApp{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-custom">
-    <a class="navbar-brand" href="{{ url_for('views.home') }}">Appointment Booking Now!</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarContent">
-      <ul class="navbar-nav mx-auto">
-        {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('views.appointment', business_id=session.get('business_id')) }}">Appointment</a>
-          </li>
-          {% if current_user.role == 'admin' or current_user.role == 'manager' %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('views.admin', business_id=session.get('business_id')) }}">Admin Panel</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('views.dashboard', business_id=session.get('business_id')) }}">Dashboard</a>
-            </li>
-          {% endif %}
-          {% if current_user.role == 'manager' %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('views.manager', business_id=session.get('business_id')) }}">Manager Panel</a>
-            </li>
-          {% endif %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('views.home') }}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.sign_up') }}">Get Started</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-          </li>
-        {% endif %}
-      </ul>
-    </div>
-  </nav>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('views.home') }}">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('views.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('views.book_appointment') }}">Appointments</a>
+                    </li>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alter-dismissable fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+                    <!-- Display Manager Panel for Manager Role -->
+                    {% if current_user.role == 'manager' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('views.manager') }}">Manager Panel</a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Display Admin Panel for Admin and Manager Roles -->
+                    {% if current_user.role == 'admin' or current_user.role == 'manager' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('views.admin') }}">Admin Panel</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.sign_up') }}">Sign Up</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+    </nav>
 
-  <div class="container">{% block container %}{% endblock %}</div>
+    <!-- Flash Messages -->
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="row">
+            <div class="col-12">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
-  
+    <!-- Main Content -->
+    <div class="container mt-4">
+        {% block container %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">&copy; 2024 JBOOKING</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

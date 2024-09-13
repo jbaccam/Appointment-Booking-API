@@ -3,53 +3,39 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block container %}
-<div class="form-container">
-  <div class="text-center mb-4">
-    <h2>Create your free account</h2>
-    <p class="text-muted">
-      Make scheduling with clients and recruits easier with a free account.
-    </p>
-  </div>
+<div class="container mt-5">
+    <h2 align="center">Create an Account</h2>
+    <form method="POST" action="{{ url_for('auth.sign_up') }}">
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter your first name" required>
+        </div>
 
-  <form method="POST">
-    <h3 class="text-center">Sign Up</h3>
-    <div class="form-group">
-      <label for="email">Email Address</label>
-      <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required />
-    </div>
-    <div class="form-group">
-      <label for="firstName">First Name</label>
-      <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name" required />
-    </div>
-    <div class="form-group">
-      <label for="password1">Password</label>
-      <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password" required />
-    </div>
-    <div class="form-group">
-      <label for="password2">Confirm Password</label>
-      <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" required />
-    </div>
-    <p>If you are joining an existing business, please enter the invite code provided by your business. Otherwise, please fill in the following fields to create a new business.</p>
-    
-    <div class="form-group">
-      <label for="invite_code">Invite Code (if joining a business)</label>
-      <input type="text" class="form-control" id="invite_code" name="invite_code" placeholder="Enter invite code if you have one" />
-    </div>
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter your last name" required>
+        </div>
 
-    <div class="form-group">
-      <label for="business_name">Business Name</label>
-      <input type="text" class="form-control" id="business_name" name="business_name" placeholder="Enter business name" />
-    </div>
-    <div class="form-group">
-      <label for="business_phone">Business Phone</label>
-      <input type="tel" class="form-control" id="business_phone" name="business_phone" placeholder="Enter business phone" />
-    </div>
-    <div class="form-group">
-      <label for="business_email">Business Email</label>
-      <input type="email" class="form-control" id="business_email" name="business_email" placeholder="Enter business email" />
-    </div>
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password2">Confirm Password</label>
+            <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+    </form>
+    <br>
+    <div align="center">
+        <small>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>.</small>
+    </div>
 </div>
 {% endblock %}

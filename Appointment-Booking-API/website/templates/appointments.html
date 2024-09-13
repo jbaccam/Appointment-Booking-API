@@ -1,5 +1,98 @@
-{% extends "base.html" %} {% block title%}Appointments{% endblock %}
+{% extends "base.html" %}
+{% block title %}Book an Appointment{% endblock %}
 
-{% block container%}
-<h1>This is the appointments booking</h1>
+{% block container %}
+    <form method="POST" action="{{ url_for('views.book_appointment') }}">
+        <h3 align="center" style="padding-top: 10px;">Book an Appointment</h3>
+
+        <!-- Appointment Category Selection -->
+        <div class="form-group">
+            <label for="category">Select Appointment Category</label>
+            <select name="category" class="form-control" required>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Admin/Manager Selection -->
+        <div class="form-group">
+            <label for="admin_id">Select Admin/Manager</label>
+            <select name="admin_id" class="form-control" id="admin_select" required>
+                <option value="" disabled selected>Select Admin/Manager</option>
+                {% for admin in admins %}
+                <option value="{{ admin.id }}">{{ admin.first_name }} ({{ admin.role }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Available Days (Loaded Based on Admin Selection) -->
+        <div class="form-group">
+            <label for="day">Select Day</label>
+            <select name="day" class="form-control" id="day_select" required>
+                <!-- Options will be populated via JavaScript based on admin selection -->
+            </select>
+        </div>        
+
+        <!-- Available Time Slots -->
+        <div class="form-group">
+            <label for="time_slot">Select Time Slot</label>
+            <select name="time_slot" class="form-control" id="time_select" required>
+                <!-- Options will be populated via JavaScript based on day selection -->
+            </select>
+        </div>        
+
+        <br />
+        <button type="submit" class="btn btn-primary">Book Appointment</button>
+    </form>
+
+    <!-- JavaScript to dynamically load days and times -->
+    <script>
+        // When admin is selected, load available days
+        document.getElementById('admin_select').addEventListener('change', function() {
+            var adminId = this.value;
+            fetch(`/get-available-days/${adminId}`)
+                .then(response => response.json())
+                .then(data => {
+                    var daySelect = document.getElementById('day_select');
+                    daySelect.innerHTML = ''; // Clear existing options
+                    var defaultOption = document.createElement('option');
+                    defaultOption.value = "";
+                    defaultOption.text = "Select Day";
+                    daySelect.add(defaultOption);
+
+                    data.days.forEach(dayObj => {
+                        var option = document.createElement('option');
+                        option.value = dayObj.date;
+                        option.text = `${dayObj.day} (${dayObj.date})`;
+                        daySelect.add(option);
+                    });
+                });
+        });
+
+        // When day is selected, load available time slots
+        document.getElementById('day_select').addEventListener('change', function() {
+            var adminId = document.getElementById('admin_select').value;
+            var selectedDay = this.value;
+            if (!selectedDay) return; // Ensure a day is selected
+            fetch(`/get-available-times/${adminId}/${selectedDay}`)
+                .then(response => response.json())
+                .then(data => {
+                    var timeSelect = document.getElementById('time_select');
+                    timeSelect.innerHTML = ''; // Clear existing options
+                    var defaultOption = document.createElement('option');
+                    defaultOption.value = "";
+                    defaultOption.text = "Select Time";
+                    timeSelect.add(defaultOption);
+
+                    data.times.forEach(time => {
+                        var option = document.createElement('option');
+                        option.value = time;
+                        option.text = time;
+                        timeSelect.add(option);
+                    });
+                });
+        });
+    </script>
+    
 {% endblock %}

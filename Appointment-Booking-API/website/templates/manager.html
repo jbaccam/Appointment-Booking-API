@@ -1,89 +1,106 @@
 {% extends "base.html" %}
-
 {% block title %}Manager{% endblock %}
 
-{% block head %}
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-  }
-
-  .container {
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-  }
-
-  h3 {
-    text-align: center;
-    color: #007bff;
-    margin-bottom: 15px;
-  }
-
-  .form-group {
-    margin-bottom: 15px;
-  }
-
-  .btn {
-    width: 90%;
-    padding: 10px;
-    margin-top: 10px;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-  }
-
-  .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-
-  .btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
-  }
-
-  label {
-    margin-bottom: .5rem;
-    display: block;
-  }
-
-  input[type="email"] {
-    font-size: 16px;
-    padding: 13px;
-  }
-</style>
-{% endblock %}
-
 {% block container %}
-<div class="container">
-  <form method="POST">
-    <h3>Remove User</h3>
+    <form method="POST" action="{{ url_for('views.manager') }}">
+        <h3 align="center" style="padding-top: 10px;">Business Information</h3>
+        <div class="form-group">
+            <label for="business_name">Business Name</label>
+            <input type="text" class="form-control" id="business_name" name="business_name"
+                   placeholder="Enter business name" value="{{ business.name if business else '' }}" />
+        </div>
+        <div class="form-group">
+            <label for="business_phone">Phone Number</label>
+            <input type="text" class="form-control" id="business_phone" name="business_phone"
+                   placeholder="Enter phone number" value="{{ business.phone if business else '' }}" />
+        </div>
+        <div class="form-group">
+            <label for="business_email">Email Address</label>
+            <input type="email" class="form-control" id="business_email" name="business_email"
+                   placeholder="Enter email" value="{{ business.email if business else '' }}" />
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Save Business Info</button>
+    </form>
+
+    <br />
+    
+<form method="POST">
+    <h3 align="center" style="padding-top: 10px;">Add Admin</h3>
     <div class="form-group">
-      <label for="remove_user_email">Email Address</label>
-      <input type="email" class="form-control" id="remove_user_email" name="remove_user_email" placeholder="Enter email" />
+        <label for="admin_email">Admin Email</label>
+        <input type="email" class="form-control" id="admin_email" name="admin_email" placeholder="Enter admin email" required>
     </div>
-    <button type="submit" class="btn btn-danger">Remove User</button>
-  </form>  
-  <form method="POST" action="{{ url_for('views.generate_invite_code') }}" style="margin-top: 40px;">
-    <h3>Generate New Invite Code</h3>
-    <p>Generate a new invite code for new users to join your business.</p>
-    <button type="submit" class="btn btn-primary">Generate Invite Code</button>
-  </form>
-  {% if current_user.role == 'manager' %}
-  <div style="margin-top: 40px;">
-    <h3>Current Invite Code:</h3>
-    {% if current_user.business.invite_code %}
-    <p>{{ current_user.business.invite_code }}</p>
-    {% else %}
-    <p>No invite code generated. Please use the button above to generate one.</p>
-    {% endif %}
-  </div>
-  {% endif %}
-</div>
+    <br />
+    <button type="submit" class="btn btn-primary" name="add_admin">Add Admin</button>
+</form>
+
+<br />
+
+<form method="POST">
+    <h3 align="center" style="padding-top: 10px;">Remove Admin</h3>
+    <div class="form-group">
+        <label for="remove_admin_email">Admin Email</label>
+        <input type="email" class="form-control" id="remove_admin_email" name="remove_admin_email" placeholder="Enter admin email to remove" required>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-danger" name="remove_admin">Remove Admin</button>
+</form>
+
+    <form method="POST">
+        <h3 align="center" style="padding-top: 10px;">Set Admin Availability</h3>
+        <div class="form-group">
+            <label for="selected_admin">Select Admin</label>
+            <select name="selected_admin" class="form-control" required>
+                {% for admin in admins %}
+                <option value="{{ admin.id }}">{{ admin.first_name }} ({{ admin.email }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="day">Day of the Week</label>
+            <select name="day" class="form-control" required>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="start_time">Start Time</label>
+            <select name="start_time" class="form-control" required>
+                {% for hour in range(0, 24) %}
+                <option value="{{ "%02d:00" | format(hour) }}">{{ "%02d:00" | format(hour) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="end_time">End Time</label>
+            <select name="end_time" class="form-control" required>
+                {% for hour in range(0, 24) %}
+                <option value="{{ "%02d:00" | format(hour) }}">{{ "%02d:00" | format(hour) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Set Availability</button>
+    </form>
+
+    <br />
+
+    <h3 align="center" style="padding-top: 10px;">Current Availability</h3>
+    <ul class="list-group">
+        {% for availability in availabilities %}
+        <li class="list-group-item">
+            {{ availability.day }}: {{ availability.start_time.strftime('%H:%M') }} - {{ availability.end_time.strftime('%H:%M') }}
+            <form method="POST" style="display: inline;">
+                <input type="hidden" name="delete_availability" value="{{ availability.id }}">
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

@@ -1,205 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-      crossorigin="anonymous"
-    /> 
+{% extends "base.html" %} 
+{% block title %}Admin Panel{% endblock %}
 
-    <link
-        rel="stylesheet"
-        href="../static/adminstyle.css"
-    />
+{% block container %}
 
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-
-    <link 
-    rel="stylesheet" 
-    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />
-
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-    
-    <title>{% block title%}Dashboard{% endblock %}</title>
-</head>
-<body>
-
-  <div id="flash-message">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        {% if category == 'error' %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="flash-button" class="close" data-dismiss="alert">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        {% else %}
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
-
-</div>
-    <div id="mySidenav" class="sidenav">
-        <a href="#appointments" onclick="displayAppointments()"><i class="bi bi-calendar-event"></i> &nbsp; Appointments</a>
-        <a href="#create-appointment" onclick="displayCreateAppointment()"><i class="bi bi-calendar-plus"></i> &nbsp; Create Appointment</a>
-        <a href="#availability" onclick="displayAvailability()"><i class="bi bi-clock"></i> &nbsp; Availability</a>
-    </div>
-
-    <div id="appointment-container" style="display: block;">
-      <h1>Appointments</h1>
-      <ul>
-          {% for appointment in appointments %}
-              <li>
-                  {{ appointment.name }} - {{ appointment.description }} - Duration: {{ appointment.interval }} minutes
-                  <form action="{{ url_for('appointments.delete_appointment', appointment_id=appointment.id) }}" method="POST" style="display: inline;">
-                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                  </form>
-              </li>
-          {% else %}
-              <li>No appointments found</li>
-          {% endfor %}
-      </ul>
-      {% if availability %}
-      <div class="content-box">
-        <h2 class="content-header" style="font-size: 32px;">Current Availability</h2>
-        <div class="week-container">
-          {% set days_list = availability.available_days.split(',') %}
-          {% for day in ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
-          <span class="day{% if day in days_list %} selected-day{% endif %}">{{ day }}</span>
-          {% endfor %}
-
+    <!-- Create Appointment Form -->
+    <form method="POST">
+        <h3 align="center" style="padding-top: 10px;">Create Appointment</h3>
+        <div class="form-group">
+            <label for="create_appointment">Appointment Category</label>
+            <input type="text" class="form-control" id="create_appointment" name="create_appointment"
+                placeholder="Enter appointment name" />
         </div>
-        
-        <div class="time-picker-container">
-          <p>Start Time: {{ availability.start_time.strftime('%I:%M %p') }}</p>
-          <p>End Time: {{ availability.end_time.strftime('%I:%M %p') }}</p>
+        <div class="form-group">
+            <label for="appointment_description">Appointment Description</label>
+            <input type="text" class="form-control" id="appointment_description" name="appointment_description"
+                placeholder="Enter a description" />
         </div>
-      </div>
-    {% else %}
-      <div class="content-box">
-        <h2 class="content-header" style="font-size: 32px;">No Availability Set</h2>
-        <p>Please configure your availability settings.</p>
-      </div>
-    {% endif %}
-  </div>
-  
-  
-  
-    
-    
+        <br />
+        <button type="submit" class="btn btn-primary">Create Category</button>
+    </form>
 
-      <div id="create-appointment-container" class="container-style" style="display: none;">
-        <form id="appointmentForm" method="POST" action="/create-appointment">
-            <div class="content-box">
-                <h2 class="content-header" style="font-size: 32px;">Create an Appointment</h2>
-                <label for="appointmentName">Appointment Name:</label>
-                <input type="text" id="appointmentName" name="appointmentName" required class="form-control" placeholder="Enter the appointment name">
-    
-                <label id="apptDescriptionText" for="appointmentDescription">Description:</label>
-                <textarea id="appointmentDescription" name="appointmentDescription" class="form-control" placeholder="Enter a description"></textarea>
-                
-                <label for="interval">Appointment Duration:</label>
-                  <select id="interval" name="interval" class="form-control" required>
-                      <option value="" disabled selected>Select duration</option> <!-- Default option that is not selectable -->
-                      <option value="15">15 minutes</option>
-                      <option value="30">30 minutes</option>
-                      <option value="60">1 hour</option>
-                      <option value="120">2 hours</option>
-                  </select>
+    <br/>
 
-    
-                <button type="submit">Create Appointment</button>
-            </div>
-        </form>
+    <!-- Delete Appointment Form -->
+    <form method="POST">
+        <h3 align="center" style="padding-top: 10px;">Delete Appointment</h3>
+        <div class="form-group">
+            <label for="delete_appointment">Appointment Name</label>
+            <input type="text" class="form-control" id="delete_appointment" name="delete_appointment"
+                placeholder="Enter appointment name to delete" />
+        </div>
+        <br />
+        <button type="submit" class="btn btn-danger">Delete Appointment</button>
+    </form>
+
+    <br/>
+
+    <!-- User Appointment Removal -->
+<form method="POST">
+    <input type="hidden" name="remove_appointment" value="true">
+    <h3 align="center" style="padding-top: 10px;">Remove User Appointment</h3>
+    <div class="form-group">
+        <label for="user_id">Select User</label>
+        <select name="user_id" class="form-control" required>
+            {% for user in users %}
+            <option value="{{ user.id }}">{{ user.first_name }} ({{ user.email }})</option>
+            {% endfor %}
+        </select>
     </div>
-    
-    
-      <!-- Step 2: Set Availability -->
-      <div id="availability-container" style="display: none;">
-    <form id="availabilityForm" method="POST" action="/set-availability">
-        <div class="content-box">
-            <h2 class="content-header" style="font-size: 32px;">Choose Your Days</h2>
-            <p class="content-description">Select the days of the week that you would like to be available for an appointment:</p>
-            <div class="week-container">
-                {% set days_list = availability.available_days.split(',') if availability else [] %}
-                {% for day in ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
-                <label class="day">{{ day }}
-                    <input type="checkbox" name="days" value="{{ day }}" {% if day in days_list %}checked{% endif %}>
-                </label>
-                {% endfor %}
-            </div>
-            
-            <div class="time-picker-container">
-                <label for="startTime">Start Time:</label>
-                <select id="startTimePicker" name="startTime" class="time-picker">
-                    {% set start_time = availability.start_time.strftime('%H:%M') if availability and availability.start_time else None %}
-                    {% for hour in range(24) %}
-                    <option value="{{ '%02d:00' | format(hour) }}" {% if start_time == '%02d:00' | format(hour) %}selected{% endif %}>
-                        {{ '%02d:00' | format(hour) }}
-                    </option>
-                    {% endfor %}
-                </select>
-            
-                <label for="endTime">End Time:</label>
-                <select id="endTimePicker" name="endTime" class="time-picker">
-                    {% set end_time = availability.end_time.strftime('%H:%M') if availability and availability.end_time else None %}
-                    {% for hour in range(24) %}
-                    <option value="{{ '%02d:00' | format(hour) }}" {% if end_time == '%02d:00' | format(hour) %}selected{% endif %}>
-                        {{ '%02d:00' | format(hour) }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-    
-            <button type="set-availability">Set Availability</button>
-          </div>
-        </form>
-      </div>
-
+    <div class="form-group">
+        <label for="appointment_id">Select Appointment</label>
+        <select name="appointment_id" class="form-control" required>
+            {% for user in users %}
+            {% for appointment in user_appointments[user.id] %}
+            <option value="{{ appointment.id }}">{{ appointment.time_slot.strftime('%Y-%m-%d %H:%M') }}</option>
+            {% endfor %}
+            {% endfor %}
+        </select>
     </div>
-    </div>
+    <br />
+    <button type="submit" class="btn btn-danger">Remove Appointment</button>
+</form>
 
-  
-  <div class="container"> {% block container%} {% endblock %}</div>
 
-      <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
-    <script src="../static/adminscript.js"></script>
-</body>
-</html>
+{% endblock %}
