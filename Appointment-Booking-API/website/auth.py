@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import Business, User
+from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
@@ -52,22 +52,21 @@ def sign_up():
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            # Create the new user account
-            new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='pbkdf2:sha256'))
+            # Check if this is the first user, make them the manager
+            is_first_user = User.query.count() == 0
+            role = 'manager' if is_first_user else 'user'
 
-            # Find an existing business (assuming there is only one manager business)
-            business = Business.query.first()
-
-            if business:
-                new_user.business = business
-                flash(f'User automatically added to the business: {business.name}', 'success')
-            else:
-                flash('No business found to associate with the user. Please contact an admin.', 'error')
-
+            new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='pbkdf2:sha256'), role=role)
             db.session.add(new_user)
             db.session.commit()
+
+            # Flash message based on user role
+            if role == 'manager':
+                flash('Account created! You are the manager. You can create your business in the manager panel.', category='success')
+            else:
+                flash('Account created! You have been added as a regular user.', category='success')
+
             login_user(new_user, remember=True)
-            flash('Account created!', category='success')
             return redirect(url_for('views.home'))
 
     return render_template("sign_up.html", user=current_user)
